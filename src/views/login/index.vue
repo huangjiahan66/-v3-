@@ -8,7 +8,9 @@
           class="login-form"
           :colon="true"
           :rules="rules"
+          :data="loginForm"
           :label-width="0"
+          @submit="handleLogin"
         >
           <t-form-item name="username">
             <t-input
@@ -34,7 +36,9 @@
             </t-input>
           </t-form-item>
           <t-form-item style="padding-top: 8px">
-            <t-button theme="primary" type="submit" block>登录</t-button>
+            <t-button theme="primary" type="submit" block :loading="loading"
+              >登录</t-button
+            >
           </t-form-item>
         </t-form>
       </t-card>
@@ -43,14 +47,18 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from "tdesign-vue-next";
-import { reactive, onMounted } from "vue";
+import { Icon, MessagePlugin } from "tdesign-vue-next";
+import { reactive, onMounted, ref } from "vue";
+import type { SubmitContext } from "tdesign-vue-next";
 import tokenApi from "@/api/token";
-import type { TokenRequest } from "@/api/type";
+import type { TokenRequest } from "@/api/types";
+import { useAppStore, useUserStore } from "@/store";
+
+import { useRouter } from "vue-router";
 // 表单数据
 const loginForm = reactive<TokenRequest>({
   username: "admin",
-  password: "admin1231",
+  password: "admin123",
 });
 // 表单验证规则
 const rules = {
@@ -58,11 +66,27 @@ const rules = {
   password: [{ required: true, message: "请填写密码" }],
 };
 
-onMounted(() => {
-  tokenApi.createToken(loginForm).then((res) => {
-    console.log(res);
-  });
-});
+const loading = ref(false);
+const appStore = useAppStore();
+const userStore = useUserStore();
+const router = useRouter();
+const handleLogin = async ({ validateResult }: SubmitContext) => {
+  console.log(validateResult);
+  // 不通过就return
+  if (validateResult !== true) {
+    return;
+  }
+
+  loading.value = true;
+  try {
+    await appStore.login(loginForm);
+    await userStore.fetchCurrentUser();
+    await MessagePlugin.success("登录成功");
+    await router.push({ name: "dashboard" });
+  } finally {
+    loading.value = false;
+  }
+};
 </script>
 
 <style lang="less" scoped>
