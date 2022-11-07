@@ -1,3 +1,4 @@
+//type 名字 就是类型别名
 export type TokenRequest = {
   username: string;
   password: string;

@@ -16,6 +16,7 @@ import { usePermissionStore } from "@/store/permission";
 import SidebarItem from "@/components/SidebarItem.vue";
 const appStore = useAppStore();
 const permissionStore = usePermissionStore();
+console.log(permissionStore);
 </script>
 
 <style scoped></style>

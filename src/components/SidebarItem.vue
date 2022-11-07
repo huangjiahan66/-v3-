@@ -7,6 +7,7 @@
     <template #icon>
       <icon :name="item.meta.icon" />
     </template>
+
     {{ item.meta.title }}
   </t-menu-item>
   <t-submenu

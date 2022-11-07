@@ -38,7 +38,7 @@
 
   <edit-dialog
     :show="showDialog"
-    :data="editData"
+    :data="data"
     @close="onDialogClose"
   ></edit-dialog>
 </template>

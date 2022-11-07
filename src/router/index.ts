@@ -15,7 +15,6 @@ declare module "vue-router" {
 }
 
 export const MENU_ROUTE_NAME = "menuRoot";
-
 export const routes: Array<RouteRecordRaw> = [
   { path: "/login", name: "login", component: LoginView },
   {
@@ -75,7 +74,7 @@ router.beforeEach((to, from, next) => {
   if (!appStore.token) {
     whiteList.indexOf(to.path) !== -1
       ? next()
-      : next(`login?redirect=${to.path}`);
+      : next(`/login?redirect=${to.path}`);
   }
   if (appStore.token && to.path === "/login") {
     next({ name: "dashboard" });
