@@ -10,21 +10,31 @@ const filterRoutes = (
   permissions: Array<string>
 ) => {
   return routes.filter((route: RouteRecordRaw) => {
-    console.log(route);
+    // if (route.children) {
+    //   route.children = filterRoutes(route.children, permissions);
+    // }
 
-    if (route.children) {
-      route.children = filterRoutes(route.children, permissions);
-    }
+    // if (!route.meta) {
+    //   return true;
+    // }
+    // if (!route.meta.permission) {
+    //   return true;
+    // }
+    // if (route.meta.permission && permissions.includes(route.meta.permission)) {
+    //   return true;
+    // }
+    // return false
+
     // 1. 没有定义meta的路由 ： !route.meta
     // 2. 没有定义meta里面permission !route.meta.permission
     // 3. permission是否存在与当前permissions 里面
-    // return (
-    //   !route.meta ||
-    //   (route.meta &&
-    //     (!route.meta.permission ||
-    //       (route.meta.permission &&
-    //         permissions.includes(route.meta.permission))))
-    // );
+    return (
+      !route.meta ||
+      (route.meta &&
+        (!route.meta.permission ||
+          (route.meta.permission &&
+            permissions.includes(route.meta.permission))))
+    );
   });
 };
 

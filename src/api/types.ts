@@ -1,4 +1,3 @@
-//type 名字 就是类型别名
 export type TokenRequest = {
   username: string;
   password: string;
@@ -17,6 +16,13 @@ export type UserType = {
   permissions: Array<string>;
 };
 
+export type RoleType = {
+  id: string;
+  name: string;
+  label: string;
+  permissions: Array<string>;
+};
+
 export interface Paging {
   page?: number;
   size?: number;
@@ -28,11 +34,33 @@ export type ListResult<T> = {
   data: Array<T>;
 };
 
-// 搜索关键词
 export interface UserFilter extends Paging {
   name: string;
 }
 
+export interface RoleFilter extends Paging {
+  name: string;
+  label: string;
+}
+
 export interface Searchable<T> {
   list(filter: object): Promise<ListResult<T>>;
+}
+
+export interface Editable<R, T> {
+  create(request: R): Promise<T>;
+
+  edit(id: string, request: R): Promise<T>;
+}
+
+export interface UserCreateRequest {
+  username: string;
+  nickname: string;
+  roles?: Array<string>;
+}
+
+export interface RoleCreateRequest {
+  name: string;
+  label: string;
+  permission: Array<string>;
 }

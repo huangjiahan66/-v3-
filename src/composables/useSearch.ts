@@ -1,10 +1,10 @@
+import { onMounted, reactive, ref } from "vue";
+import type { Ref } from "vue";
 import type { Searchable } from "@/api/types";
-import { onMounted, reactive, ref, type Ref } from "vue";
-import type { PaginationProps, PageInfo } from "tdesign-vue-next";
+import type { PageInfo, PaginationProps } from "tdesign-vue-next";
 
 export const useSearch = <T, K>(api: Searchable<T>, searchKey: K) => {
-  const data = <Ref<Array<T>>>ref([]); //要渲染的表单数据
-  // 分页模型
+  const data = <Ref<Array<T>>>ref([]);
   const pagination = reactive<PaginationProps>({
     current: 1,
     total: 0,
@@ -19,19 +19,23 @@ export const useSearch = <T, K>(api: Searchable<T>, searchKey: K) => {
       .list({
         page: pagination.current,
         size: pagination.pageSize,
+        total: pagination.total,
         ...searchKey,
       })
       .then((res) => {
         data.value = res.data;
         pagination.current = res.paging.page;
-        pagination.total = res.paging.total;
         pagination.pageSize = res.paging.size;
+        pagination.total = res.paging.total;
         loading.value = false;
+      })
+      .catch((error) => {
+        loading.value = true;
+        throw new Error(error);
       });
   };
-  onMounted(() => {
-    fetchData();
-  });
+
+  onMounted(fetchData);
 
   const onPageChange = (pageInfo: PageInfo) => {
     pagination.current = pageInfo.current;
@@ -39,5 +43,11 @@ export const useSearch = <T, K>(api: Searchable<T>, searchKey: K) => {
     fetchData();
   };
 
-  return { data, pagination, loading, fetchData, onPageChange };
+  return {
+    data,
+    pagination,
+    loading,
+    fetchData,
+    onPageChange,
+  };
 };
